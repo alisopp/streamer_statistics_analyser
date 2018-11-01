@@ -33,6 +33,7 @@ def readTwitchStreams():
     json_data = result.json()
     # just add the data, leave aside the pagination cursor.
     all_data.extend(json_data["data"])
+    print("Length: " + str(len(all_data)))
     # get out the viewer count ...
     for d in json_data["data"]:
         print(d["viewer_count"])
