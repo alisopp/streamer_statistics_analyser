@@ -11,7 +11,7 @@ from settings.credentials import client_id
 """
 
 
-def read_twitch_streams():
+def read_twitch_streams(numbers_of_pages):
     endpoint = "https://api.twitch.tv/helix/streams?first=100"
 
     all_data = []
@@ -25,7 +25,7 @@ def read_twitch_streams():
     cursor = (json_data["pagination"]["cursor"])  # cursor for the next page ...
 
     # fetch the next x pages ...
-    for i in range(19):
+    for i in range(numbers_of_pages - 1):
         result = requests.get(endpoint + "&after=" + cursor, headers=headers)
         json_data = result.json()
         all_data.extend(json_data["data"])

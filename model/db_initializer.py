@@ -1,3 +1,4 @@
 from mongoengine import *
 
-connect('stream_reader', host='localhost', port=27017)
+db_client = connect('stream_reader', host='localhost', port=27017)
+

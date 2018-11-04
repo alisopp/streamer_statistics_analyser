@@ -1,13 +1,9 @@
 from mongoengine import *
+from streamer import Streamer
 
 
-class Stream(EmbeddedDocument):
-
+class Stream(Document):
     stream_id = IntField(primary_key=True)
-    user_id = IntField(required=True)
-
+    streamer = ReferenceField(Streamer)
     game_id = IntField()
-
-    viewer_count = IntField(min_value=0, required=True)
-
-
+    started_at = DateTimeField()
