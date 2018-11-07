@@ -26,4 +26,8 @@ def update_highest_viewer_results():
         streamer.datetime_of_the_highest_viewer_count = date
         streamer.highest_viewer_count = highest_viewer_count
         streamer.save()
-
+update_highest_viewer_results()
+#streamer = get_viewer_results_per_day("DreamHackDota2_RU", datetime.datetime.utcnow())
+#for viewer in streamer.viewer:
+#    print viewer.viewer_count
+db_client.close()

@@ -1,9 +1,14 @@
 from mongoengine import *
-from streamer import Streamer
+
+from model import Streamer, ActualViewerStatistics
 
 
-class Stream(Document):
+class StreamMetaData(Document):
     stream_id = IntField(primary_key=True)
     streamer = ReferenceField(Streamer)
     game_id = IntField()
     started_at = DateTimeField()
+    language = StringField()
+    title = StringField()
+    viewer_counts = ListField(EmbeddedDocumentField(ActualViewerStatistics))
+    last_record = DateTimeField()
