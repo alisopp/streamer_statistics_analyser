@@ -6,7 +6,7 @@ import requests
 from settings.credentials import client_id
 
 """
-    Calls twitch for getting the streams list of a particular game. 
+    Calls twitch for getting the streams list of the 100 most viewed streamer. 
     Sorted by view count. Result are stored as a list in a JSON file.
 """
 
