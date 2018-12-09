@@ -30,6 +30,8 @@ def save_into_database(all_data, current_dt):
         streamer = Streamer.objects(user_id=_user_id).first()
         if streamer is None:
             streamer = Streamer(user_id=_user_id, user_name=_user_name, display_name=_user_name)
+            streamer.highest_viewer_count = _viewer_count
+            streamer.datetime_of_the_highest_viewer_count = current_dt
         else:
             if streamer.highest_viewer_count <= _viewer_count:
                 streamer.highest_viewer_count = _viewer_count
