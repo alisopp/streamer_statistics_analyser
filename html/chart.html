@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js" integrity="sha256-JG6hsuMjFnQ2spWq0UiaDRJBaarzhFbUxiUTxQDA9Lk=" crossorigin="anonymous"></script>
+    <script src="./data.js"></script>
+</head>
+<body>
+<canvas id="myChart" width="320" height="240"></canvas>
+<script>
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: getLabels(),
+            datasets: getData()
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            },
+            elements: {
+                line: {
+                    tension: 0.1, // disables bezier curves
+                }
+            },
+            legend: {
+                position: 'right',
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -40,7 +40,7 @@ def save_into_database(all_data, current_dt):
         stream = StreamMetaData.objects(stream_id=_stream_id).first()
         if stream is None:
             stream = StreamMetaData(stream_id=_stream_id, title=_stream_title, language=_language,
-                                    started_at=_started_at, streamer=streamer)
+                                    started_at=_started_at, streamer_id=streamer)
         if is_int_number(_game_id):
             _game_id = int(_game_id)
             stream.game_id = _game_id
