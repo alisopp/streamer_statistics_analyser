@@ -10,10 +10,19 @@ var request = new XMLHttpRequest();
 request.open("GET", "data.json", false);
 request.send(null);
 chartData = JSON.parse(request.responseText);
-
+request = new XMLHttpRequest();
+request.open("GET", "../index.json", false);
+request.send(null);
+var datum = JSON.parse(request.responseText);
 
 $(document).ready(function () {
     $("#sub_title").text(chartData.title_sub);
+    var i = 0;
+    $("#collapsibleNavbar ul li a").each(function () {
+        $( this ).text(datum.datum[i]);
+        i++;
+    });
+
     var ctx = document.getElementById("myChart").getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
@@ -32,7 +41,8 @@ $(document).ready(function () {
             elements: {
                 line: {
                     tension: 0.1, // disables bezier curves
-                }
+                },
+                point: {radius: 0}
             },
             legend: {
                 position: 'right',
@@ -40,6 +50,7 @@ $(document).ready(function () {
         }
     });
 });
+
 //alert(chartData);
 function getData() {
     return chartData.chart_data
