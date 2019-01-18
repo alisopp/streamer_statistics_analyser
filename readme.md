@@ -1,6 +1,7 @@
 needed packages
 
 * mongoengine
+* pymongo
 * requests
 
 and their subpackages.  

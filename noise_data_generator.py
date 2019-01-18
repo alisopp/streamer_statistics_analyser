@@ -1,12 +1,8 @@
+import codecs
 import datetime
+import json
 import math
 import random
-import time
-
-import matplotlib.pyplot as plt
-from matplotlib import dates
-
-import json_dump
 
 colors = [  # from https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
     "#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6",
@@ -88,7 +84,21 @@ def generate_fake_data(seed, start_date=datetime.datetime.utcnow(), end_date=dat
     return json_dict
 
 
-#generate_fake_data(2, datetime.datetime(2018, 11, 12, 0, 0, 0, 0),
-#                   datetime.datetime(2018, 11, 19, 0, 0, 0, 0), ["ger", "en", "esp", "fr"])
+""""
+def myconverter(o):
+    if isinstance(o, datetime.datetime):
+        return o.__str__()
 
-# week minute length = 7 * 24 * 60 = 10080/5
+
+def single_array_save(data, filename):
+    with codecs.open(filename + ".json", "w",
+                     "utf-8") as file:
+        # closing file
+        # data = json.dumps(data, )
+        json.dump(data, file, default=myconverter)
+        file.close()
+
+
+website_data = generate_fake_data(5, datetime.datetime(2018, 12, 3, 0, 0, 0, 0),
+                                  datetime.datetime(2018, 12, 10, 0, 0, 0, 0), ["ger", "en", "esp", "fr"])
+single_array_save(website_data, "side_4/data")"""

@@ -1,7 +1,12 @@
-from model import *
-from model import Streamer
+# test file to test if the docker sets its env variables right
+import os
 
-streamers = Streamer.objects.order_by('-highest_viewer_count').limit(10)
+db_port = os.environ['DB_PORT']
+db_host = os.environ['DB_HOST']
 
-for streamer in streamers:
-    print(streamer.user_name + ": " + str(streamer.highest_viewer_count))
+print (db_port)
+print (db_host)
+
+file = open("hello.txt", "a")
+
+file.write(db_host)

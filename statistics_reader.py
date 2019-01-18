@@ -45,8 +45,8 @@ def get_data(streams):
     return (x, y, s, game_id)
 
 
-def get_data_per_language(start_date, end_date):
-    streams_per_language = StreamMetaData.objects.aggregate(
+def get_data_per_language(start_date, end_date, languages):
+    pipeline = [
         {"$unwind": "$viewer_counts"},
 
         {"$match":
@@ -67,14 +67,13 @@ def get_data_per_language(start_date, end_date):
         {"$group": {"_id": "$_id.language", "observations": {"$push": "$_id.observation_date"},
                     "data": {"$push": "$viewer_count"}}},
         {"$project": {"chart_data.label": "$_id", "observations": 1, "chart_data.data": "$data"}}
-        # create chart js
-
-    )
+    ]
+    if languages.__len__() > 0:
+        pipeline.insert(0, {"$match": {"language": {"$in": languages}}})
+    streams_per_language = StreamMetaData.objects.aggregate(*pipeline)
     current_color = 0
-    amount_of_times_in_last_set = 0
     json_dict = {}
     json_dict['chart_data'] = []
-    observation_times = []
     time_set = set()
     data_per_language = list()
     for lang_stream in streams_per_language:
@@ -110,7 +109,7 @@ def get_data_per_language(start_date, end_date):
 
     json_dict["observation_date"] = time_set
     json_dict["title_sub"] = start_date.strftime("%Y.%m.%d") + " - " + end_date.strftime("%Y.%m.%d")
-    json_dump.single_array_save(json_dict, "html/data")
+    return json_dict
 
 
 def get_data_for_chart_js(streamer, start_date, end_date):
@@ -178,7 +177,3 @@ def createStreamerData():
         json_dict['observation_date'] = observation_times
 
     json_dump.single_array_save(json_dict, "html/data")
-
-
-get_data_per_language(datetime.datetime(2018, 10, 29, 0, 0, 0, 0),
-                      datetime.datetime(2018, 11, 5, 0, 0, 0, 0))

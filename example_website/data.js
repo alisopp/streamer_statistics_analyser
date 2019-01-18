@@ -13,13 +13,13 @@ chartData = JSON.parse(request.responseText);
 request = new XMLHttpRequest();
 request.open("GET", "../index.json", false);
 request.send(null);
-var datum = JSON.parse(request.responseText);
+var date = JSON.parse(request.responseText);
 
 $(document).ready(function () {
     $("#sub_title").text(chartData.title_sub);
     var i = 0;
     $("#collapsibleNavbar ul li a").each(function () {
-        $( this ).text(datum.datum[i]);
+        $( this ).text(date.date[i]);
         i++;
     });
 
