@@ -46,3 +46,5 @@ tmtagsHistory
 *.sublime-project
 *.sublime-workspace
 .bundle
+
+example_website/*

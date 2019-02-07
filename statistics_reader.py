@@ -1,9 +1,7 @@
 import datetime
-import json_dump
-import matplotlib.pyplot as plt
-from matplotlib import dates
 from mongoengine import *
 
+import json_dump
 from model import Streamer, StreamMetaData
 
 colors = [  # from https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
@@ -24,25 +22,6 @@ def get_stream_data_for_user(streamer_id, start_date, end_date):
         Q(viewer_counts__observation_date__gte=start_of_start_date) &
         Q(viewer_counts__observation_date__lte=end_of_end_date))
     return streams
-
-
-def get_data(streams):
-    cnt = 0
-    x = []  # rank
-    y = []  # viewer count
-    s = []  # seconds running
-    game_id = 0
-    for stream in streams:
-        game_id = stream.game_id
-        for entry in stream.viewer_counts:
-            date_tmp = str(entry.observation_date)
-            # td = parser.parse(str(entry.observation_date)) - datetime.datetime(1970, 1, 1)
-            cnt = cnt + 1
-            x.append(cnt)
-            y.append(entry.viewer_count)
-            s.append(dates.datestr2num(date_tmp))
-            # s.append(td)
-    return (x, y, s, game_id)
 
 
 def get_data_per_language(start_date, end_date, languages):
@@ -103,7 +82,6 @@ def get_data_per_language(start_date, end_date, languages):
             elif saved_time < time_to_check:
                 chart_data['data'].insert(saved_times_of_current_set, 0)
                 language_times.insert(saved_times_of_current_set, saved_time)
-        print "language " + chart_data["label"]
         current_color = (current_color + 1) % colors.__len__()
         json_dict['chart_data'].append(chart_data)
 
@@ -159,19 +137,19 @@ def get_data_for_chart_js(streamer, start_date, end_date):
     return streamers
 
 
-def createStreamerData():
+def create_streamer_data():
     streamerList = get_data_for_chart_js(["Ninja", "TimTheTatman"], datetime.datetime(2018, 11, 5, 18, 0, 28, 324000),
                                          datetime.datetime(2018, 11, 25, 19, 14, 28, 324000))
 
-    currentColor = 0
+    current_color = 0
     json_dict = {}
     json_dict['chart_data'] = []
     for streamer in streamerList:
         chart_data = streamer["chart_data"]
         chart_data['fill'] = False
-        chart_data['backgroundColor'] = colors[currentColor]
-        chart_data['borderColor'] = colors[currentColor]
-        currentColor += 1
+        chart_data['backgroundColor'] = colors[current_color]
+        chart_data['borderColor'] = colors[current_color]
+        current_color += 1
         observation_times = streamer["observation_date"]
         json_dict['chart_data'].append(chart_data)
         json_dict['observation_date'] = observation_times

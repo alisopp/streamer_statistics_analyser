@@ -18,7 +18,7 @@ class DataLoader:
         self.is_loading_data = True
         current_dt = datetime.datetime.utcnow()
         print("Start reading data")
-        all_data = read_streams.read_twitch_streams(1)
+        all_data = read_streams.read_twitch_streams(20)
         print("Saving data")
         database_saver.save_into_database(all_data, current_dt)
         # json_dump.json_save(all_data, current_dt)
