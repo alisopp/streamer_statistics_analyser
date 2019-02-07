@@ -1,0 +1,4 @@
+*/5 * * * * python /twitch_reader/data_loader.py
+*/5 * * * * date >> /dev/stdout 2>&1
+1 0 * * 1 python /twitch_reader/next_website.py
+# An empty line is required at the end of this file for a valid cron file.

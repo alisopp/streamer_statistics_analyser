@@ -1,0 +1,28 @@
+version: '3'
+services:
+  db:
+    image: mongo:3.6
+    volumes:
+     - dbroot:/data/db/
+    ports:
+     - "27017:27017"
+  backend:
+    image: twitch_statistics
+    volumes:
+     - wwwroot:/wwwroot
+    environment:
+     - DB_PORT=27017
+     - DB_HOST=db
+     - WWW_ROOT=/wwwroot/
+     - DEBUG=False
+     - START_DATE=01.01.2019
+     - TWITCH_CREDENTIALS=ADD_HERE
+  frontend:
+    image: httpd:2.4
+    ports:
+     - "8080:80"
+    volumes:
+     - wwwroot:/usr/local/apache2/htdocs/
+volumes:
+  wwwroot:
+  dbroot:
