@@ -40,7 +40,7 @@ class WebsiteGenerator:
 
 DbConnector.getInstance().init_db(env_variables.db_url, env_variables.db_port, env_variables.db_name)
 generator = WebsiteGenerator(env_variables.wwwroot)
-generator.generate_website(True, datetime.datetime(2018, 11, 5, 0, 0, 0, 0),
-                           datetime.datetime(2018, 11, 12, 0, 0, 0, 0),
-                           ["ger", "en", "esp", "fr"])
+generator.generate_website(False, datetime.datetime.now() - datetime.timedelta(days=7),
+                           datetime.datetime.now(),
+                           [])
 DbConnector.getInstance().close_db()
