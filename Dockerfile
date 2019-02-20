@@ -17,6 +17,7 @@ ENV START_DATE=${start_date}
 ENV TWITCH_CREDENTIALS=${credential}
 
 ADD twitch_reader /twitch_reader
+ADD example_website/data.js /twitch_reader/example_website
 
 # Add crontab file in the cron directory
 COPY crontab /etc/cron/crontab
