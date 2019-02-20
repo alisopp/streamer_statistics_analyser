@@ -1,6 +1,6 @@
 from mongoengine import *
 
-from model import Streamer, ActualViewerStatistics
+from twitch_statistics_reader.model import Streamer, ActualViewerStatistics
 
 
 class StreamMetaData(Document):
