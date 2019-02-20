@@ -1,7 +1,6 @@
 import codecs
 import datetime
 import json
-from bson import json_util
 
 from settings.env_variables import savePath
 

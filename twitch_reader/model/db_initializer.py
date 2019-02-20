@@ -1,6 +1,6 @@
 from mongoengine import *
 
-from twitch_reader.settings import env_variables
+from settings import env_variables
 
 
 class DbConnector:
