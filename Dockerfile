@@ -5,12 +5,17 @@ ARG www_root="/"
 ARG debug=True
 ARG start_date="01.01.2019"
 ARG credential="1"
+ARG db_username=""
+ARG db_password=""
 ENV DB_PORT=${db_port}
 ENV DB_HOST=${db_host}
+ENV DB_USERNAME=${db_username}
+ENV DB_PASSWORD=${db_password}
 ENV WWW_ROOT=${www_root}
 ENV DEBUG=${debug}
 ENV START_DATE=${start_date}
 ENV TWITCH_CREDENTIALS=${credential}
+
 ADD twitch_reader /twitch_reader
 
 # Add crontab file in the cron directory

@@ -25,6 +25,9 @@ class DataLoader:
         self.is_loading_data = False
 
 
-DbConnector.getInstance().init_db(env_variables.db_url, env_variables.db_port, env_variables.db_name)
+DbConnector.getInstance().init_db(env_variables.db_url, env_variables.db_port, env_variables.db_name,
+                                  env_variables.get_db_username(), env_variables.get_db_password())
 loader = DataLoader()
 loader.start()
+
+DbConnector.getInstance().close_db()

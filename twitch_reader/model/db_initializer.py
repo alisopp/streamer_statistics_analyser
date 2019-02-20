@@ -22,14 +22,11 @@ class DbConnector:
         else:
             DbConnector.__instance = self
 
-    def init_db(self, db_url,db_port, db_name):
+    def init_db(self, db_url, db_port, db_name, username, password):
         if self.db_client == None:
-            self.db_client = connect(db_name, host=db_url, port=db_port)
+            self.db_client = connect(db_name, username=username, password=password, authentication_source='admin', host=db_url, port=db_port)
 
     def close_db(self):
         if self.db_client != None:
             self.db_client.close()
         self.db_client = None
-
-
-DbConnector.getInstance().init_db(env_variables.db_url, env_variables.db_port, env_variables.db_name)

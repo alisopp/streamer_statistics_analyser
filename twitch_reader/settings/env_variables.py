@@ -12,8 +12,17 @@ create_new_statistic_interval = 7
 def get_debug():
     if os.environ.get('DEBUG') is not None:
         return os.environ['DEBUG'] == "True"
-    return False
+    return True
 
+def get_db_username():
+    if os.environ.get('DB_USERNAME') is not None:
+        return os.environ['DB_USERNAME']
+    return ''
+
+def get_db_password():
+    if os.environ.get('DB_PASSWORD') is not None:
+        return os.environ['DB_PASSWORD']
+    return ''
 
 def get_www_root():
     if os.environ.get('WWW_ROOT') is not None:
@@ -49,6 +58,9 @@ db_url = get_url()
 db_port = get_port()
 
 db_name = "stream_reader"
+
+db_password = get_db_password()
+db_username = get_db_username()
 
 wwwroot = get_www_root()
 

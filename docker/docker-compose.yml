@@ -13,10 +13,12 @@ services:
     environment:
      - DB_PORT=27017
      - DB_HOST=db
+     - DB_USERNAME=user
+     - DB_PASSWORD=password
      - WWW_ROOT=/wwwroot/
      - DEBUG=False
      - START_DATE=01.01.2019
-     - TWITCH_CREDENTIALS=ADD_HERE
+     - TWITCH_CREDENTIALS=1
   frontend:
     image: httpd:2.4
     ports:

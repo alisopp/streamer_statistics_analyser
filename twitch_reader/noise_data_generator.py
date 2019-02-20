@@ -7,7 +7,7 @@ import random
 colors = [  # from https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
     "#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6",
     "#d2f53c", "#fabebe", "#008080", "#e6beff", "#aa6e28", "#fffac8", "#800000", "#aaffc3",
-    "#808000", "#ffd8b1", "#000080", "#808080", "#FFFFFF", "#000000"
+    "#808000", "#ffd8b1", "#000080", "#808080", "#000000"
 ]
 
 amplitudes = [0.2]  # , 0.5, 1.0, 0.7, 0.5, 0.4]
@@ -82,23 +82,3 @@ def generate_fake_data(seed, start_date=datetime.datetime.utcnow(), end_date=dat
         current_time = start_date + datetime.timedelta(0, 0, 0, 0, 5 * x)
         json_dict['observation_date'].append(current_time.strftime("%Y.%m.%d %H:%M"))
     return json_dict
-
-
-""""
-def myconverter(o):
-    if isinstance(o, datetime.datetime):
-        return o.__str__()
-
-
-def single_array_save(data, filename):
-    with codecs.open(filename + ".json", "w",
-                     "utf-8") as file:
-        # closing file
-        # data = json.dumps(data, )
-        json.dump(data, file, default=myconverter)
-        file.close()
-
-
-website_data = generate_fake_data(5, datetime.datetime(2018, 12, 3, 0, 0, 0, 0),
-                                  datetime.datetime(2018, 12, 10, 0, 0, 0, 0), ["ger", "en", "esp", "fr"])
-single_array_save(website_data, "side_4/data")"""
