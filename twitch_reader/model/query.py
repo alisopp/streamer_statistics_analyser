@@ -1,7 +1,6 @@
 import datetime
 from mongoengine import *
-from model import *
-from model import Streamer, db_client
+from twitch_reader.model import Streamer, db_client
 
 
 def get_viewer_results_per_day(streamer, date):

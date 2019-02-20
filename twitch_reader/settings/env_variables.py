@@ -11,8 +11,8 @@ create_new_statistic_interval = 7
 
 def get_debug():
     if os.environ.get('DEBUG') is not None:
-        return bool(os.environ['DEBUG'])
-    return True
+        return os.environ['DEBUG'] == "True"
+    return False
 
 
 def get_www_root():
@@ -37,7 +37,7 @@ def get_start_date():
     if os.environ.get('START_DATE') is not None:
         result_date = datetime.datetime.strptime(os.environ['START_DATE'], "%d.%m.%Y")
     else:
-        result_date = datetime.datetime.strptime("06.01.2019","%d.%m.%Y")
+        result_date = datetime.datetime.strptime("01.12.2018","%d.%m.%Y")
     return result_date + datetime.timedelta(days=(6 - result_date.weekday()))
 
 

@@ -1,9 +1,7 @@
 import datetime
-import time
 
 import database_saver
 import read_streams
-from model import db_initializer
 from model.db_initializer import DbConnector
 from settings import env_variables
 

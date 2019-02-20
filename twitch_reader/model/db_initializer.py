@@ -1,6 +1,6 @@
 from mongoengine import *
 
-from settings import env_variables
+from twitch_reader.settings import env_variables
 
 
 class DbConnector:
@@ -32,4 +32,4 @@ class DbConnector:
         self.db_client = None
 
 
-DbConnector.getInstance().init_db(env_variables.db_url, env_variables.db_port,env_variables.db_name)
+DbConnector.getInstance().init_db(env_variables.db_url, env_variables.db_port, env_variables.db_name)
