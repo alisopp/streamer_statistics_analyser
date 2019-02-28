@@ -26,8 +26,21 @@ def get_stream_data_for_user(streamer_id, start_date, end_date):
 
 def get_data_per_language(start_date, end_date, languages):
     pipeline = [
+        {"$addFields": {
+            "stream_start": {"$arrayElemAt": ["$viewer_counts", 0]},
+            "stream_end": {"$arrayElemAt": ["$viewer_counts", -1]}
+        }},
+        {"$match":
+            {"$expr":
+                {"$and":
+                    [
+                        {"$lte": ["$stream_start.observation_date", end_date]},
+                        {"$gte": ["$stream_end.observation_date", start_date]}
+                    ]
+                }
+            }
+        },
         {"$unwind": "$viewer_counts"},
-
         {"$match":
             {"$expr":
                 {"$and":
@@ -38,10 +51,8 @@ def get_data_per_language(start_date, end_date, languages):
                 }
             }
         },
-        {"$project": {"viewer_count": "$viewer_counts.viewer_count", "language": 1,
-                      "observation_date": "$viewer_counts.observation_date"}},
-        {"$group": {"_id": {"language": "$language", "observation_date": "$observation_date"},
-                    "viewer_count": {"$sum": "$viewer_count"}}},
+        {"$group": {"_id": {"language": "$language", "observation_date": "$viewer_counts.observation_date"},
+                    "viewer_count": {"$sum": "$viewer_counts.viewer_count"}}},
         {"$sort": {"_id.observation_date": 1}},
         {"$group": {"_id": "$_id.language", "observations": {"$push": "$_id.observation_date"},
                     "data": {"$push": "$viewer_count"}}},
@@ -50,9 +61,6 @@ def get_data_per_language(start_date, end_date, languages):
     if languages.__len__() > 0:
         pipeline.insert(0, {"$match": {"language": {"$in": languages}}})
     streams_per_language = StreamMetaData.objects.aggregate(*pipeline)
-    current_color = 0
-    json_dict = {}
-    json_dict['chart_data'] = []
     time_set = set()
     data_per_language = list()
     for lang_stream in streams_per_language:
@@ -61,6 +69,13 @@ def get_data_per_language(start_date, end_date, languages):
         for x in language_times:
             time_set.add(x)
     time_set = sorted(time_set)
+    title = start_date.strftime("%Y.%m.%d") + " - " + end_date.strftime("%Y.%m.%d")
+    return create_chart_js(time_set, data_per_language, title)
+
+
+def create_chart_js(time_set, data_per_language, title):
+    current_color = 0
+    json_dict = {'chart_data': []}
     for lang_stream in data_per_language:
 
         chart_data = lang_stream["chart_data"]
@@ -68,12 +83,11 @@ def get_data_per_language(start_date, end_date, languages):
         chart_data['backgroundColor'] = colors[current_color]
         chart_data['borderColor'] = colors[current_color]
         language_times = lang_stream["observations"]
-        current_amount_of_times = language_times.__len__()
 
-        for x in (0, time_set.__len__() - 1):
+        for x in range(0, time_set.__len__()):
             saved_times_of_current_set = x
-            if saved_times_of_current_set >= current_amount_of_times:
-                saved_times_of_current_set = current_amount_of_times - 1
+            if saved_times_of_current_set >= language_times.__len__():
+                saved_times_of_current_set = language_times.__len__() - 1
             saved_time = time_set[x]
             time_to_check = language_times[saved_times_of_current_set]
             if saved_time > time_to_check:
@@ -84,9 +98,11 @@ def get_data_per_language(start_date, end_date, languages):
                 language_times.insert(saved_times_of_current_set, saved_time)
         current_color = (current_color + 1) % colors.__len__()
         json_dict['chart_data'].append(chart_data)
-
+    for i in range(0, time_set.__len__()):
+        time_set[i] = time_set[i].strftime("%Y-%m-%d %H:%M:")
     json_dict["observation_date"] = time_set
-    json_dict["title_sub"] = start_date.strftime("%Y.%m.%d") + " - " + end_date.strftime("%Y.%m.%d")
+    json_dict["title_sub"] = title
+
     return json_dict
 
 
