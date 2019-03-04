@@ -21,13 +21,12 @@ class WebsiteGenerator:
             next_start_date = current + datetime.timedelta(days=-7)
             self.generate_website(use_fake_data, next_start_date, current, filter_by, data_function, custom_title_pre)
             current = next_start_date
-        # self.generate_navigation_side(start_date + datetime.timedelta(days=7), end_date)
 
     def generate_navigation_side(self, start_date, end_date, sub_directories):
         nav_builder = NavigationSideBuilder()
         nav_builder = nav_builder.set_start_date(start_date).set_end_date(end_date)
         for sub_directory in sub_directories:
-            nav_builder.add_sub_navigation(sub_directory)
+            nav_builder.add_sub_navigation(sub_directory["directory"],sub_directory["title"])
 
         navigation_side = nav_builder.build()
         nav_file = open(self.www_root + "index.html", "w")

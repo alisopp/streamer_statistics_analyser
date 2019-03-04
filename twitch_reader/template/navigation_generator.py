@@ -13,6 +13,15 @@ class Statistic:
     link_name = ""
 
 
+class SubDirectory:
+    def __init__(self, directory, title):
+        self.directory = directory
+        self.title = title
+
+    directory = ""
+    title = ""
+
+
 class NavigationSideBuilder:
     sub_directories = []
     start_date = datetime
@@ -21,8 +30,8 @@ class NavigationSideBuilder:
     def __init__(self):
         pass
 
-    def add_sub_navigation(self, sub_directory):
-        self.sub_directories.append(sub_directory)
+    def add_sub_navigation(self, sub_directory, sub_title):
+        self.sub_directories.append(SubDirectory(sub_directory,sub_title))
         return self
 
     def set_start_date(self, start_date):

@@ -16,5 +16,10 @@ DbConnector.getInstance().init_db(env_variables.db_url, env_variables.db_port, e
 generator = WebsiteGenerator(env_variables.wwwroot)
 
 generator.generate_base_directory(env_variables.debug, start_date, outer_end_date, [],
-                                  statistics_reader.get_data_per_language)
+                                  statistics_reader.get_data_per_language, custom_title_pre="lang")
+generator.generate_base_directory(env_variables.debug, start_date, outer_end_date,
+                                  ["Ninja", "ESL_CSGO", "OverwatchLeague"], statistics_reader.get_streamer_data,
+                                  custom_title_pre="streamer")
+navigation_sides = [{"directory": "lang", "title": "Languages"}, {"directory": "streamer", "title": "Streamers"}]
+generator.generate_navigation_side(env_variables.start_date, outer_end_date, navigation_sides)
 DbConnector.getInstance().close_db()

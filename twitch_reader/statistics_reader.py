@@ -13,7 +13,10 @@ colors = [  # from https://sashat.me/2017/01/11/list-of-20-simple-distinct-color
 
 
 def get_streamers_with_the_most_viewers(limit):
-    return Streamer.objects.order_by('-highest_viewer_count').limit(limit)
+    result_list = []
+    for result in Streamer.objects.order_by('-highest_viewer_count').limit(limit):
+        result_list.append(result.user_name)
+    return result_list
 
 
 def get_stream_data_for_user(streamer_id, start_date, end_date):
@@ -111,7 +114,18 @@ def create_chart_js(time_set, data_per_language, title):
     return json_dict
 
 
-def get_data_for_chart_js(start_date, end_date, streamers):
+def get_streamer_data(start_date, end_date, title_pre, streamers):
+    if streamers.__len__() == 0:
+        streamers = get_streamers_with_the_most_viewers(10)
+    title = title_pre + "".join(streamers) + start_date.strftime("%Y.%m.%d") + " - " + end_date.strftime("%Y.%m.%d")
+    cached_result = CalculatedStatistics.objects(title_sub=title).first()
+    if cached_result is not None:
+        json_dict = {}
+        for field in cached_result:
+            if "id".__eq__(field):
+                continue
+            json_dict[field] = cached_result[field]
+        return json_dict
     streamers = Streamer.objects.aggregate(
         {"$match": {"user_name": {"$in": streamers}}},
         {"$lookup":
@@ -152,27 +166,15 @@ def get_data_for_chart_js(start_date, end_date, streamers):
                       "observation_date": "$streams.observation_date", "display_name": "$display_name"}},
         {"$unwind": "$viewer_count"},
         {"$unwind": "$observation_date"},
-        {"$project": {"observation_date": "$observation_date", "chart_data.data": "$viewer_count",
+        {"$project": {"observations": "$observation_date", "chart_data.data": "$viewer_count",
                       "chart_data.label": "$display_name"}}
     )
-    return streamers
-
-
-def create_streamer_data():
-    streamerList = get_data_for_chart_js(["Ninja", "TimTheTatman"], datetime.datetime(2018, 11, 5, 18, 0, 28, 324000),
-                                         datetime.datetime(2018, 11, 25, 19, 14, 28, 324000))
-
-    current_color = 0
-    json_dict = {}
-    json_dict['chart_data'] = []
-    for streamer in streamerList:
-        chart_data = streamer["chart_data"]
-        chart_data['fill'] = False
-        chart_data['backgroundColor'] = colors[current_color]
-        chart_data['borderColor'] = colors[current_color]
-        current_color += 1
-        observation_times = streamer["observation_date"]
-        json_dict['chart_data'].append(chart_data)
-        json_dict['observation_date'] = observation_times
-
-    json_dump.single_array_save(json_dict, "html/data")
+    time_set = set()
+    data_per_streamer = list()
+    for lang_stream in streamers:
+        data_per_streamer.append(lang_stream)
+        streamer_times = lang_stream["observations"]
+        for x in streamer_times:
+            time_set.add(x)
+    time_set = sorted(time_set)
+    return create_chart_js(time_set, data_per_streamer, title)

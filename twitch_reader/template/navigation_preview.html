@@ -40,11 +40,12 @@
         </ul>
     </div>
 </nav>
+<div class="row">
 {% for sub_directory in sub_directories -%}
-<div>
-    <h2>{{sub_directory}}</h2>
+<div class="col-sm-6">
+    <h2 class="text-center">{{sub_directory.title}}</h2>
 {% for statistic in statistics -%}
-<a href="{{sub_directory}}/{{statistic.link}}" class="list-group-item list-group-item-action"><h1 align="center">{{statistic.link_name}}</h1></a>
+<a href="{{sub_directory.directory}}/{{statistic.link}}" class="list-group-item list-group-item-action"><h1 align="center">{{statistic.link_name}}</h1></a>
 {% endfor %}
 </div>
 {% endfor %}
