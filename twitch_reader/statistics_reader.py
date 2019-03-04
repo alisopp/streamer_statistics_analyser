@@ -2,7 +2,8 @@ import datetime
 from mongoengine import *
 
 import json_dump
-from model import Streamer, StreamMetaData
+from model import Streamer, StreamMetaData, db_initializer, CalculatedStatistics
+import settings
 
 colors = [  # from https://sashat.me/2017/01/11/list-of-20-simple-distinct-colors/
     "#e6194b", "#3cb44b", "#ffe119", "#0082c8", "#f58231", "#911eb4", "#46f0f0", "#f032e6",
@@ -24,22 +25,21 @@ def get_stream_data_for_user(streamer_id, start_date, end_date):
     return streams
 
 
-def get_data_per_language(start_date, end_date, languages):
+def get_data_per_language(start_date, end_date, title_pre, languages):
+    title = title_pre.join(languages) + start_date.strftime("%Y.%m.%d") + " - " + end_date.strftime("%Y.%m.%d")
+    cached_result = CalculatedStatistics.objects(title_sub=title).first()
+    if cached_result is not None:
+        json_dict = {}
+        for field in cached_result:
+            if "id".__eq__(field):
+                continue
+            json_dict[field] = cached_result[field]
+        return json_dict
     pipeline = [
         {"$addFields": {
             "stream_start": {"$arrayElemAt": ["$viewer_counts", 0]},
             "stream_end": {"$arrayElemAt": ["$viewer_counts", -1]}
         }},
-        {"$match":
-            {"$expr":
-                {"$and":
-                    [
-                        {"$lte": ["$stream_start.observation_date", end_date]},
-                        {"$gte": ["$stream_end.observation_date", start_date]}
-                    ]
-                }
-            }
-        },
         {"$unwind": "$viewer_counts"},
         {"$match":
             {"$expr":
@@ -51,8 +51,10 @@ def get_data_per_language(start_date, end_date, languages):
                 }
             }
         },
-        {"$group": {"_id": {"language": "$language", "observation_date": "$viewer_counts.observation_date"},
-                    "viewer_count": {"$sum": "$viewer_counts.viewer_count"}}},
+        {"$project": {"viewer_count": "$viewer_counts.viewer_count", "language": 1,
+                      "observation_date": "$viewer_counts.observation_date"}},
+        {"$group": {"_id": {"language": "$language", "observation_date": "$observation_date"},
+                    "viewer_count": {"$sum": "$viewer_count"}}},
         {"$sort": {"_id.observation_date": 1}},
         {"$group": {"_id": "$_id.language", "observations": {"$push": "$_id.observation_date"},
                     "data": {"$push": "$viewer_count"}}},
@@ -69,7 +71,6 @@ def get_data_per_language(start_date, end_date, languages):
         for x in language_times:
             time_set.add(x)
     time_set = sorted(time_set)
-    title = start_date.strftime("%Y.%m.%d") + " - " + end_date.strftime("%Y.%m.%d")
     return create_chart_js(time_set, data_per_language, title)
 
 
@@ -99,16 +100,20 @@ def create_chart_js(time_set, data_per_language, title):
         current_color = (current_color + 1) % colors.__len__()
         json_dict['chart_data'].append(chart_data)
     for i in range(0, time_set.__len__()):
-        time_set[i] = time_set[i].strftime("%Y-%m-%d %H:%M:")
+        time_set[i] = time_set[i].strftime("%Y-%m-%d %H:%M")
     json_dict["observation_date"] = time_set
     json_dict["title_sub"] = title
-
+    statistic = CalculatedStatistics(title_sub=title, observation_date=time_set, chart_data=json_dict["chart_data"])
+    statistic.save()
+    # db = db_initializer.DbConnector.getInstance().db_client[settings.env_variables.db_name]
+    # mycol = db[settings.env_variables.cache_col_name]
+    # mycol.insert_one(json_dict)
     return json_dict
 
 
-def get_data_for_chart_js(streamer, start_date, end_date):
+def get_data_for_chart_js(start_date, end_date, streamers):
     streamers = Streamer.objects.aggregate(
-        {"$match": {"user_name": {"$in": streamer}}},
+        {"$match": {"user_name": {"$in": streamers}}},
         {"$lookup":
             {
                 "from": "stream_meta_data",

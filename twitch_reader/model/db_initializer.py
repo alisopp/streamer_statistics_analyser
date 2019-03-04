@@ -1,7 +1,5 @@
 from mongoengine import *
 
-from settings import env_variables
-
 
 class DbConnector:
     __instance = None
