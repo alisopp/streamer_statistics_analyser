@@ -13,22 +13,39 @@ class Statistic:
     link_name = ""
 
 
-def generate_navigation(start_date, end_date):
-    current = start_date
-    statistics = []
-    while current <= end_date:
-        link_name = current.strftime("%d.%m.%Y")
-        link = "side_" + link_name
-        statistics.append(Statistic(link, link_name))
-        current = current + datetime.timedelta(days=7)
-    file_loader = FileSystemLoader(str(os.path.dirname(__file__)))
-    env = Environment(loader=file_loader)
-    template = env.get_template('navigation_preview.html')
-    statistics.reverse()
-    output = template.render(statistics=statistics)
-    return output
+class NavigationSideBuilder:
+    sub_directories = []
+    start_date = datetime
+    end_date = datetime
 
+    def __init__(self):
+        pass
 
+    def add_sub_navigation(self, sub_directory):
+        self.sub_directories.append(sub_directory)
+        return self
 
+    def set_start_date(self, start_date):
+        self.start_date = start_date
+        return self
 
+    def set_end_date(self, end_date):
+        self.end_date = end_date
+        return self
 
+    def build(self):
+        current = self.start_date
+        statistics = []
+        while current <= self.end_date:
+            next_end_date = current + datetime.timedelta(days=7)
+            link_name = current.strftime("%d.%m.%Y")
+            link = "side_" + link_name
+            link_name += " - " + next_end_date.strftime("%d.%m.%Y")
+            statistics.append(Statistic(link, link_name))
+            current = next_end_date
+        file_loader = FileSystemLoader(str(os.path.dirname(__file__)))
+        env = Environment(loader=file_loader)
+        template = env.get_template('navigation_preview.html')
+        statistics.reverse()
+        output = template.render(statistics=statistics, sub_directories=self.sub_directories)
+        return output

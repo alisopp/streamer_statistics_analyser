@@ -13,6 +13,6 @@ outer_end_date = outer_end_date.replace(hour=23, minute=59)
 generator = WebsiteGenerator(env_variables.wwwroot)
 outer_start_date = outer_end_date - datetime.timedelta(weeks=1)
 generator.generate_website(env_variables.debug, outer_start_date, outer_end_date,
-                           [], statistics_reader.get_data_per_language)
-generator.generate_navigation_side(env_variables.start_date, outer_end_date)
+                           [], statistics_reader.get_data_per_language, custom_title_pre="lang")
+generator.generate_navigation_side(env_variables.start_date, outer_end_date, ["lang", "streamer"])
 DbConnector.getInstance().close_db()
