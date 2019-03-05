@@ -21,5 +21,5 @@ generator.generate_base_directory(env_variables.debug, start_date, outer_end_dat
                                   ["Ninja", "ESL_CSGO", "OverwatchLeague"], statistics_reader.get_streamer_data,
                                   custom_title_pre="streamer")
 navigation_sides = [{"directory": "lang", "title": "Languages"}, {"directory": "streamer", "title": "Streamers"}]
-generator.generate_navigation_side(env_variables.start_date, outer_end_date, navigation_sides)
+generator.generate_navigation_side(start_date, outer_end_date, navigation_sides)
 DbConnector.getInstance().close_db()

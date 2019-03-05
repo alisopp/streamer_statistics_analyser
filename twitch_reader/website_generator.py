@@ -1,5 +1,6 @@
 import datetime
 import os
+import shutil
 
 import json_dump
 import noise_data_generator
@@ -16,6 +17,7 @@ class WebsiteGenerator:
 
     def generate_base_directory(self, use_fake_data, start_date, end_date, filter_by, data_function,
                                 custom_title_pre=""):
+        shutil.rmtree(self.www_root + custom_title_pre, ignore_errors=True)
         current = end_date
         while current > start_date:
             next_start_date = current + datetime.timedelta(days=-7)
