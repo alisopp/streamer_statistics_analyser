@@ -1,8 +1,7 @@
 needed packages
 
 * mongoengine
-* pymongo
 * requests
+* jinja2
 
-and their subpackages.  
-install with "python -m pip install PACKAGE"
+and their subpackages.
