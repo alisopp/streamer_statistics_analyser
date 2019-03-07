@@ -1,4 +1,4 @@
 #!/bin/bash
 python /twitch_reader/base_generator.py
-mv /twitch_reader/example_website/data.js /wwwroot/data.js
+mv /twitch_reader/example_website/* /wwwroot/
 crond -f
